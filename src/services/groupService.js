@@ -18,6 +18,16 @@ function parseGroupDetails(data) {
   return { ...group, members: members.length ? members : group.members, tasks };
 }
 
+function parseInvitations(data) {
+  const raw = data?.invitations ?? data?.data?.invitations ?? [];
+  return extractListFromApiPart(raw).map((inv) => ({
+    id: inv.id,
+    name: inv.name ?? inv.team_name ?? 'Team',
+    description: inv.description ?? '',
+    inviterName: inv.owner?.name ?? inv.inviter?.name ?? inv.created_by_name ?? 'Unknown',
+  }));
+}
+
 function createPollingSubscription(fetcher, callback, onError) {
   let active = true;
   let lastJson = '';
@@ -56,18 +66,35 @@ export const groupService = {
     return parseGroupDetails(data);
   },
 
-  async createGroup({ name, description, maxMembers, memberEmails = [] }) {
+  async getInvitations() {
+    const data = await apiClient.get('teams');
+    return parseInvitations(data);
+  },
+
+  async acceptInvitation(teamId) {
+    return apiClient.post(`teams/${teamId}/accept`);
+  },
+
+  async declineInvitation(teamId) {
+    return apiClient.post(`teams/${teamId}/decline`);
+  },
+
+  async createGroup({ name, description, maxMembers, memberEmails = [], avatarFile = null }) {
     const data = await apiClient.post('teams', {
       name,
       description: description || null,
       max_members: maxMembers ? Number(maxMembers) : undefined,
     });
     const group = normalizeGroup(data?.team ?? data?.data ?? data);
-    await Promise.all(
-      memberEmails
+    const uploads = [
+      ...memberEmails
         .filter(Boolean)
         .map((email) => groupService.addMember(group.id, email).catch(() => null)),
-    );
+    ];
+    if (avatarFile) {
+      uploads.push(groupService.uploadGroupAvatar(group.id, avatarFile).catch(() => null));
+    }
+    await Promise.all(uploads);
     return group;
   },
 
@@ -86,5 +113,29 @@ export const groupService = {
 
   async addMember(groupId, email) {
     return apiClient.post(`teams/${groupId}/invite`, { email });
+  },
+
+  async uploadGroupAvatar(groupId, file) {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    const token = (await import('./apiClient.js')).getStoredToken();
+    const { getDeviceId } = await import('./apiClient.js');
+    const baseUrl = import.meta.env.VITE_API_URL ?? '';
+    const normalizedBase = baseUrl.trim().endsWith('/') ? baseUrl.trim() : `${baseUrl.trim()}/`;
+    const apiBase = normalizedBase.includes('/api') ? normalizedBase : `${normalizedBase}api/`;
+    const response = await fetch(`${apiBase}teams/${groupId}/avatar`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        Authorization: token ? `Bearer ${token.trim()}` : '',
+        'X-Device-ID': getDeviceId(),
+      },
+      body: formData,
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.message || 'Failed to upload avatar');
+    }
+    return response.json();
   },
 };

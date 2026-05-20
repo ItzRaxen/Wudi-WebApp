@@ -21,7 +21,6 @@ const GroupTasksPage = lazy(() =>
   import('../pages/group-tasks/GroupTasksPage.jsx').then((module) => ({ default: module.GroupTasksPage })),
 );
 const GroupsPage = lazy(() => import('../pages/groups/GroupsPage.jsx').then((module) => ({ default: module.GroupsPage })));
-const TodayPage = lazy(() => import('../pages/today/TodayPage.jsx').then((module) => ({ default: module.TodayPage })));
 const SearchPage = lazy(() => import('../pages/search/SearchPage.jsx').then((module) => ({ default: module.SearchPage })));
 const CalendarPage = lazy(() =>
   import('../pages/calendar/CalendarPage.jsx').then((module) => ({ default: module.CalendarPage })),
@@ -91,14 +90,6 @@ export const router = createBrowserRouter([
         element: (
           <RouteLoader>
             <GroupsPage />
-          </RouteLoader>
-        ),
-      },
-      {
-        path: ROUTES.today,
-        element: (
-          <RouteLoader>
-            <TodayPage />
           </RouteLoader>
         ),
       },

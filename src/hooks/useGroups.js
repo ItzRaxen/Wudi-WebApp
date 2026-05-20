@@ -6,6 +6,7 @@ import { groupService } from '../services/groupService.js';
 export const groupKeys = {
   all: ['groups'],
   detail: (id) => ['groups', id],
+  invitations: ['group-invitations'],
 };
 
 export function useGroups() {
@@ -25,9 +26,20 @@ export function useGroupDetails(groupId) {
   });
 }
 
+export function useInvitations() {
+  return useQuery({
+    queryKey: groupKeys.invitations,
+    queryFn: groupService.getInvitations,
+    refetchInterval: REFETCH_INTERVAL_MS,
+  });
+}
+
 export function useGroupMutations() {
   const queryClient = useQueryClient();
-  const invalidate = () => queryClient.invalidateQueries({ queryKey: groupKeys.all });
+  const invalidate = () => {
+    queryClient.invalidateQueries({ queryKey: groupKeys.all });
+    queryClient.invalidateQueries({ queryKey: groupKeys.invitations });
+  };
 
   const createGroup = useMutation({
     mutationFn: groupService.createGroup,
@@ -54,7 +66,13 @@ export function useGroupMutations() {
       invalidate();
       toast.success('Group deleted');
     },
-    onError: (error) => toast.error(error.message || 'Failed to delete group'),
+    onError: (error) => {
+      if (error.status === 401 || error.status === 403) {
+        toast.error('Only the group owner can delete this group.');
+      } else {
+        toast.error(error.message || 'Failed to delete group');
+      }
+    },
   });
 
   const addMember = useMutation({
@@ -67,12 +85,33 @@ export function useGroupMutations() {
     onError: (error) => toast.error(error.message || 'Failed to invite member'),
   });
 
+  const acceptInvitation = useMutation({
+    mutationFn: (teamId) => groupService.acceptInvitation(teamId),
+    onSuccess: () => {
+      invalidate();
+      toast.success('Joined group successfully!');
+    },
+    onError: (error) => toast.error(error.message || 'Failed to accept invitation'),
+  });
+
+  const declineInvitation = useMutation({
+    mutationFn: (teamId) => groupService.declineInvitation(teamId),
+    onSuccess: () => {
+      invalidate();
+      toast.success('Invitation declined');
+    },
+    onError: (error) => toast.error(error.message || 'Failed to decline invitation'),
+  });
+
   return {
     createGroup: createGroup.mutateAsync,
     updateGroup: updateGroup.mutateAsync,
     deleteGroup: deleteGroup.mutateAsync,
     addMember: addMember.mutateAsync,
+    acceptInvitation: acceptInvitation.mutateAsync,
+    declineInvitation: declineInvitation.mutateAsync,
     isPending:
-      createGroup.isPending || updateGroup.isPending || deleteGroup.isPending || addMember.isPending,
+      createGroup.isPending || updateGroup.isPending || deleteGroup.isPending ||
+      addMember.isPending || acceptInvitation.isPending || declineInvitation.isPending,
   };
 }

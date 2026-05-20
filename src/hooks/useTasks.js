@@ -83,7 +83,13 @@ export function useTaskMutations() {
       invalidate();
       toast.success('Task deleted');
     },
-    onError: (error) => toast.error(error.message || 'Failed to delete task'),
+    onError: (error) => {
+      if (error.status === 401 || error.status === 403) {
+        toast.error('You can only delete tasks that you created.');
+      } else {
+        toast.error(error.message || 'Failed to delete task');
+      }
+    },
   });
 
   const toggleTask = useMutation({

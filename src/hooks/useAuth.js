@@ -67,6 +67,20 @@ export function useAuth() {
     onError: (error) => toast.error(error.message || 'Google Login failed'),
   });
 
+  const uploadAvatarMutation = useMutation({
+    mutationFn: authService.uploadAvatar,
+    onSuccess: (newAvatarUrl) => {
+      if (newAvatarUrl) {
+        setUser({ ...user, avatarUrl: newAvatarUrl });
+      } else {
+        // Refresh user data from server
+        authService.getCurrentUser({ forceRefresh: true }).then((u) => { if (u) setUser(u); });
+      }
+      toast.success('Profile photo updated!');
+    },
+    onError: (error) => toast.error(error.message || 'Failed to update photo'),
+  });
+
   return {
     user,
     initialized,
@@ -76,9 +90,11 @@ export function useAuth() {
     register: registerMutation.mutateAsync,
     verifyEmail: verifyEmailMutation.mutateAsync,
     logout: logoutMutation.mutateAsync,
+    uploadAvatar: uploadAvatarMutation.mutateAsync,
     isLoggingIn: loginMutation.isPending || loginWithGoogleMutation.isPending,
     isRegistering: registerMutation.isPending,
     isVerifyingEmail: verifyEmailMutation.isPending,
     isLoggingOut: logoutMutation.isPending,
+    isUploadingAvatar: uploadAvatarMutation.isPending,
   };
 }

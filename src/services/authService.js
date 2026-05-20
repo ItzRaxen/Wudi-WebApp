@@ -101,6 +101,37 @@ export const authService = {
     return user;
   },
 
+  async uploadAvatar(file) {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    const token = getStoredToken();
+    const { getDeviceId: _getDeviceId } = await import('./apiClient.js');
+    const baseUrl = import.meta.env.VITE_API_URL ?? '';
+    const normalizedBase = baseUrl.trim().endsWith('/') ? baseUrl.trim() : `${baseUrl.trim()}/`;
+    const apiBase = normalizedBase.includes('/api') ? normalizedBase : `${normalizedBase}api/`;
+    const response = await fetch(`${apiBase}profile/avatar`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        Authorization: token ? `Bearer ${token.trim()}` : '',
+        'X-Device-ID': _getDeviceId(),
+      },
+      body: formData,
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.message || 'Failed to upload avatar');
+    }
+    const data = await response.json();
+    // Update stored user with new avatar URL
+    const newAvatarUrl = data?.avatar_url ?? data?.avatarUrl ?? null;
+    if (newAvatarUrl) {
+      const stored = getStoredUser();
+      if (stored) setStoredUser({ ...stored, avatarUrl: newAvatarUrl });
+    }
+    return newAvatarUrl;
+  },
+
   onAuthStateChanged(callback) {
     const unsubscribeFirebase =
       auth && isFirebaseConfigured

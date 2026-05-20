@@ -1,4 +1,4 @@
-import { CalendarClock, Check, Pencil, Trash2, UserRound, UsersRound } from 'lucide-react';
+import { CalendarClock, Check, Pencil, Trash2, UserRound, UsersRound, Loader2 } from 'lucide-react';
 import { formatDateTime, isOverdue } from '../../utils/date.js';
 import { Button } from '../ui/Button.jsx';
 import { PriorityBadge, StatusBadge, TypeBadge } from '../ui/Badge.jsx';
@@ -48,19 +48,29 @@ export function TaskCard({ task, onOpen, onEdit, onDelete, onToggle, loading }) 
         </button>
 
         <div className="flex shrink-0 items-center gap-2">
-          <Button
-            variant={task.isCompleted ? 'secondary' : 'primary'}
-            size="icon"
-            loading={loading}
-            onClick={() => onToggle?.(task)}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle?.(task);
+            }}
+            disabled={loading}
+            className={`flex h-10 w-10 items-center justify-center rounded-lg border-2 transition-colors ${
+              task.isCompleted
+                ? 'border-primary bg-primary text-white dark:border-primary-light dark:bg-primary-light'
+                : 'border-slate-300 bg-transparent hover:border-slate-400 dark:border-slate-700 dark:hover:border-slate-600'
+            }`}
             aria-label={task.isCompleted ? 'Mark pending' : 'Mark complete'}
           >
-            <Check className="h-4 w-4" />
-          </Button>
-          <Button variant="secondary" size="icon" onClick={() => onEdit?.(task)} aria-label="Edit task">
+            {loading ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : task.isCompleted ? (
+              <Check className="h-6 w-6" strokeWidth={2.5} />
+            ) : null}
+          </button>
+          <Button variant="secondary" size="icon" onClick={(e) => { e.stopPropagation(); onEdit?.(task); }} aria-label="Edit task">
             <Pencil className="h-4 w-4" />
           </Button>
-          <Button variant="secondary" size="icon" onClick={() => onDelete?.(task)} aria-label="Delete task">
+          <Button variant="secondary" size="icon" onClick={(e) => { e.stopPropagation(); onDelete?.(task); }} aria-label="Delete task">
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>

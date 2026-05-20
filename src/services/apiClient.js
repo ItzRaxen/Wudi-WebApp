@@ -138,6 +138,13 @@ async function rawRequest(path, options = {}) {
       });
       return parseResponse(retryResponse);
     }
+    // Refresh failed – parse and throw the original 401 response with a clear message
+    const errData = await response.json().catch(() => null);
+    const errMessage = errData?.message || errData?.error || 'You are not authorized to perform this action.';
+    const error = new Error(errMessage);
+    error.status = 401;
+    error.data = errData;
+    throw error;
   }
 
   return parseResponse(response);

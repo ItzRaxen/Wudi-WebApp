@@ -1,10 +1,8 @@
 import {
   CalendarDays,
-  CheckCircle2,
   Gauge,
   ListTodo,
   MessageCircle,
-  Search,
   Users,
 } from 'lucide-react';
 
@@ -18,7 +16,6 @@ export const ROUTES = {
   personalTasks: '/tasks/personal',
   groupTasks: '/tasks/group',
   groups: '/groups',
-  today: '/today',
   search: '/search',
   calendar: '/calendar',
   chat: '/chat',
@@ -27,10 +24,7 @@ export const ROUTES = {
 export const NAV_ITEMS = [
   { label: 'Dashboard', path: ROUTES.dashboard, icon: Gauge },
   { label: 'Personal Tasks', path: ROUTES.personalTasks, icon: ListTodo },
-  { label: 'Group Tasks', path: ROUTES.groupTasks, icon: Users },
-  { label: 'Groups', path: ROUTES.groups, icon: Users },
-  { label: 'Today', path: ROUTES.today, icon: CheckCircle2 },
-  { label: 'Search', path: ROUTES.search, icon: Search },
+  { label: 'Group', path: ROUTES.groups, icon: Users },
   { label: 'Calendar', path: ROUTES.calendar, icon: CalendarDays },
   { label: 'Chat', path: ROUTES.chat, icon: MessageCircle },
 ];
