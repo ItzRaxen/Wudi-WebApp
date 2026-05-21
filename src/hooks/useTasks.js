@@ -78,7 +78,10 @@ export function useTodayTasks() {
 
 export function useTaskMutations() {
   const queryClient = useQueryClient();
-  const invalidate = () => queryClient.invalidateQueries({ queryKey: ['tasks'] });
+  const invalidate = () => {
+    queryClient.invalidateQueries({ queryKey: ['tasks'] });
+    queryClient.invalidateQueries({ queryKey: ['calendar-events'] });
+  };
 
   const createTask = useMutation({
     mutationFn: taskService.createTask,

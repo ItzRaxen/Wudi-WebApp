@@ -13,7 +13,6 @@ export function useGroups() {
   return useQuery({
     queryKey: groupKeys.all,
     queryFn: groupService.getGroups,
-    refetchInterval: REFETCH_INTERVAL_MS,
   });
 }
 
@@ -22,7 +21,6 @@ export function useGroupDetails(groupId) {
     queryKey: groupKeys.detail(groupId),
     queryFn: () => groupService.getGroupDetails(groupId),
     enabled: Boolean(groupId),
-    refetchInterval: REFETCH_INTERVAL_MS,
   });
 }
 
@@ -30,7 +28,6 @@ export function useInvitations() {
   return useQuery({
     queryKey: groupKeys.invitations,
     queryFn: groupService.getInvitations,
-    refetchInterval: REFETCH_INTERVAL_MS,
   });
 }
 

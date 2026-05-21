@@ -46,34 +46,20 @@ select {
   color: #EAE0D5;
 }
 
-/* Custom Today Date Number Indicator */
+/* Removed Custom Today Date Number Indicator to match mock */
 .fc .fc-day-today .fc-daygrid-day-number,
 .fc .fc-day-today .fc-col-header-cell-cushion {
-  background-color: #21182B; /* Purple */
-  color: #F5EEE6 !important; /* Cream */
-  border-radius: 9999px;
-  min-width: 28px;
-  height: 28px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 6px;
-  margin: 4px;
-  font-weight: 600;
-  box-shadow: 0 2px 4px rgba(33, 24, 43, 0.2);
-}
-
-/* Dark mode for Today Date Number */
-.dark .fc .fc-day-today .fc-daygrid-day-number,
-.dark .fc .fc-day-today .fc-col-header-cell-cushion {
-  background-color: #F5EEE6; /* Cream */
-  color: #21182B !important; /* Purple */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  font-weight: bold;
 }
 
 .fc .fc-toolbar-title {
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   font-weight: 700;
+  color: #1B1123;
+}
+
+.dark .fc .fc-toolbar-title {
+  color: #EAE0D5;
 }
 
 .fc .fc-button {
@@ -142,18 +128,19 @@ select {
   color: #EAE0D5 !important;
 }
 
-/* Custom Today Button (matches the container style of button groups) */
+/* Custom Today Button */
 .fc .fc-today-button {
-  background: #FCFAF7 !important;
-  color: #21182B !important;
-  border: 1px solid #21182B !important;
+  background: #5C546A !important;
+  color: #FCFAF7 !important;
+  border: none !important;
   border-radius: 9999px !important;
-  padding: 10px 22px !important; /* height matching: 4px padding + 6px button padding */
+  padding: 8px 24px !important;
   font-weight: 500;
   transition: all 0.2s ease;
   box-shadow: none !important;
   opacity: 1 !important;
   text-transform: capitalize;
+  margin-left: 12px !important; /* Space between < > and Today */
 }
 
 .fc .fc-today-button:disabled {
@@ -162,7 +149,7 @@ select {
 }
 
 .fc .fc-today-button:not(:disabled):hover {
-  background: rgba(33, 24, 43, 0.08) !important;
+  background: #4A4356 !important;
 }
 
 /* Dark mode for Today Button */

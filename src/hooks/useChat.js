@@ -5,7 +5,6 @@ export function useConversations() {
   return useQuery({
     queryKey: ['conversations'],
     queryFn: () => chatService.getConversations(),
-    refetchInterval: 3000, // Poll every 3s
   });
 }
 
@@ -14,7 +13,6 @@ export function useMessages(conversationId) {
     queryKey: ['messages', conversationId],
     queryFn: () => chatService.getMessages(conversationId),
     enabled: Boolean(conversationId),
-    refetchInterval: 2000, // Poll every 2s
   });
 }
 

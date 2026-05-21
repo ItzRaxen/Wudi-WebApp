@@ -115,23 +115,47 @@ export function TaskForm({
             </Select>
           </Field>
 
-          <Field label="Assigned members">
-            <Select
-              multiple
-              className="h-32"
-              value={assignedEmails}
-              onChange={(event) => {
-                const selected = Array.from(event.target.selectedOptions).map((option) => option.value);
-                setValue('assignedEmails', selected, { shouldValidate: true });
-              }}
-            >
-              {(selectedGroup?.members || []).map((member) => (
-                <option key={member.email || member.id} value={member.email}>
-                  {member.name} {member.email ? `(${member.email})` : ''}
-                </option>
-              ))}
-            </Select>
-          </Field>
+          <div className="grid gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+            <span>Assigned members</span>
+            <div className="flex max-h-48 flex-col gap-1 overflow-y-auto rounded-lg border border-slate-200 bg-white p-2 dark:border-slate-700 dark:bg-input-darkBg">
+              {!selectedGroup?.members || selectedGroup.members.length === 0 ? (
+                <p className="p-2 text-slate-500 text-sm font-normal">No members found.</p>
+              ) : (
+                selectedGroup.members.map((member) => (
+                  <label
+                    key={member.email || member.id}
+                    className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-1.5 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                  >
+                    <input
+                      type="checkbox"
+                      className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary dark:border-slate-600 dark:bg-slate-700"
+                      value={member.email}
+                      checked={assignedEmails.includes(member.email)}
+                      onChange={(e) => {
+                        const email = member.email;
+                        if (e.target.checked) {
+                          setValue('assignedEmails', [...assignedEmails, email], { shouldValidate: true });
+                        } else {
+                          setValue(
+                            'assignedEmails',
+                            assignedEmails.filter((val) => val !== email),
+                            { shouldValidate: true }
+                          );
+                        }
+                      }}
+                    />
+                    <span className="flex flex-col">
+                      <span className="text-slate-900 dark:text-slate-100">{member.name}</span>
+                      {member.email ? <span className="text-xs font-normal text-slate-500 dark:text-slate-400">{member.email}</span> : null}
+                    </span>
+                  </label>
+                ))
+              )}
+            </div>
+            {errors.assignedEmails?.message ? (
+              <span className="text-xs font-medium text-red-600">{errors.assignedEmails.message}</span>
+            ) : null}
+          </div>
 
           <Field label="Or assign by email">
             <Input

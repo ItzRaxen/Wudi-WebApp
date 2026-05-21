@@ -12,8 +12,10 @@ export function TaskMutationModals({ state, mode = 'personal', selectedGroupId =
   const { createTask, updateTask, deleteTask, toggleTask, isPending } = useTaskMutations();
 
   const handleToggle = async (task) => {
-    await toggleTask({ task, user, completed: !task.isCompleted });
-    state.closeDetail();
+    const updatedTask = await toggleTask({ task, user, completed: !task.isCompleted });
+    if (state.detailTask?.id === task.id) {
+      state.openDetail(updatedTask);
+    }
   };
 
   return (

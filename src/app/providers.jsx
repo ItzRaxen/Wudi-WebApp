@@ -10,7 +10,8 @@ export function AppProviders({ children }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            refetchOnWindowFocus: true,
+            staleTime: 5 * 60 * 1000, // 5 minutes cache
+            refetchOnWindowFocus: false,
             retry: 1,
           },
         },

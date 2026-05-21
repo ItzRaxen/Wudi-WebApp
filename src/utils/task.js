@@ -54,10 +54,6 @@ export function normalizeTask(todo, groups = []) {
   let canDelete = true;
 
   if (teamId && currentUser) {
-    const isCreator = owner && (
-      (owner.id && String(owner.id) === String(currentUser.id)) || 
-      (owner.email && owner.email === currentUser.email)
-    );
     const isGroupOwner = group && (
       group.isOwner || 
       (group.owner && (
@@ -65,8 +61,8 @@ export function normalizeTask(todo, groups = []) {
         (group.owner.email && group.owner.email === currentUser.email)
       ))
     );
-    canEdit = Boolean(isCreator || isGroupOwner);
-    canDelete = Boolean(isCreator || isGroupOwner);
+    canEdit = Boolean(isGroupOwner);
+    canDelete = Boolean(isGroupOwner);
   }
 
   return {

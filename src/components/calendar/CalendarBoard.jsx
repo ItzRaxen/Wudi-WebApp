@@ -9,12 +9,12 @@ export function CalendarBoard({ events, onEventClick }) {
     const isCompleted = task?.isCompleted;
     
     return (
-      <div className="flex w-full items-center gap-1.5 overflow-hidden rounded px-1 py-0.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/50 dark:hover:bg-slate-800">
+      <div className="flex w-full items-center gap-1.5 overflow-hidden rounded px-1.5 py-0.5 bg-[#E2E2E2] hover:bg-[#D4D4D4] dark:bg-slate-800 dark:hover:bg-slate-700">
         <div 
           className="h-2 w-2 flex-shrink-0 rounded-full" 
-          style={{ backgroundColor: eventInfo.event.textColor }} 
+          style={{ backgroundColor: eventInfo.event.textColor || '#ef4444' }} 
         />
-        <span className={`truncate text-xs font-semibold ${isCompleted ? 'text-slate-400 line-through dark:text-slate-500' : 'text-slate-700 dark:text-slate-200'}`}>
+        <span className={`truncate text-[10px] font-bold ${isCompleted ? 'text-slate-400 line-through dark:text-slate-500' : 'text-[#1B1123] dark:text-slate-200'}`}>
           {eventInfo.event.title}
         </span>
       </div>
@@ -22,7 +22,7 @@ export function CalendarBoard({ events, onEventClick }) {
   };
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div className="rounded-[2rem] border border-[#EAE0D5] bg-[#FCFAF7] p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
