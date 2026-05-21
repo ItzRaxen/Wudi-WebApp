@@ -33,6 +33,7 @@ export function TaskForm({
     handleSubmit,
     control,
     setValue,
+    setError,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(taskSchema),
@@ -56,6 +57,18 @@ export function TaskForm({
   }, [selectedGroupId, setValue, task?.id]);
 
   const submit = (values) => {
+    if (values.deadline) {
+      const selectedDate = new Date(values.deadline);
+      const now = new Date();
+      // Allow if editing and the date wasn't changed
+      const isUnchanged = task?.deadline && formatDateInput(task.deadline) === values.deadline;
+      
+      if (!isUnchanged && selectedDate < now) {
+        setError('deadline', { type: 'manual', message: 'Due date cannot be in the past' });
+        return;
+      }
+    }
+
     onSubmit({
       ...values,
       teamId: isGroupMode ? values.teamId : '',

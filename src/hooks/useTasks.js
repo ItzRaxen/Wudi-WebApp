@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { REFETCH_INTERVAL_MS } from '../constants/app.js';
 import { taskService } from '../services/taskService.js';
@@ -18,31 +18,53 @@ function useGroupContext() {
 
 export function useAllTasks() {
   const groups = useGroupContext();
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: [...taskKeys.all, groups.length],
-    queryFn: () => taskService.getAllTasks(groups),
-    refetchInterval: REFETCH_INTERVAL_MS,
+    queryFn: ({ pageParam = 1 }) => taskService.getTasksPage(pageParam, groups),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const current = Number(lastPage.pagination?.current_page || 1);
+      const last = Number(lastPage.pagination?.last_page || 1);
+      return current < last ? current + 1 : undefined;
+    },
   });
 }
 
 export function usePersonalTasks() {
   const groups = useGroupContext();
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: [...taskKeys.personal, groups.length],
-    queryFn: async () => (await taskService.getAllTasks(groups)).filter((task) => task.type === 'personal'),
-    refetchInterval: REFETCH_INTERVAL_MS,
+    queryFn: async ({ pageParam = 1 }) => {
+      const result = await taskService.getTasksPage(pageParam, groups);
+      return { ...result, todos: result.todos.filter((task) => task.type === 'personal') };
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const current = Number(lastPage.pagination?.current_page || 1);
+      const last = Number(lastPage.pagination?.last_page || 1);
+      return current < last ? current + 1 : undefined;
+    },
   });
 }
 
 export function useGroupTasks(groupId = 'all') {
   const groups = useGroupContext();
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: [...taskKeys.group, groupId, groups.length],
-    queryFn: async () => {
-      const tasks = (await taskService.getAllTasks(groups)).filter((task) => task.type === 'group');
-      return groupId === 'all' ? tasks : tasks.filter((task) => String(task.teamId) === String(groupId));
+    queryFn: async ({ pageParam = 1 }) => {
+      const result = await taskService.getTasksPage(pageParam, groups);
+      let todos = result.todos.filter((task) => task.type === 'group');
+      if (groupId !== 'all') {
+        todos = todos.filter((task) => String(task.teamId) === String(groupId));
+      }
+      return { ...result, todos };
     },
-    refetchInterval: REFETCH_INTERVAL_MS,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const current = Number(lastPage.pagination?.current_page || 1);
+      const last = Number(lastPage.pagination?.last_page || 1);
+      return current < last ? current + 1 : undefined;
+    },
   });
 }
 
@@ -51,7 +73,6 @@ export function useTodayTasks() {
   return useQuery({
     queryKey: [...taskKeys.today, groups.length],
     queryFn: () => taskService.getTodayTasks(groups),
-    refetchInterval: REFETCH_INTERVAL_MS,
   });
 }
 

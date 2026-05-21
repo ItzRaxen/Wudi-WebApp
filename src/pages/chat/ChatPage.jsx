@@ -55,14 +55,14 @@ function ChatBubble({ message, isMe, onReply, onDelete, memberMap, onViewProfile
 
       <div
         className={cn(
-          'max-w-[75%] rounded-2xl px-4 py-2.5 shadow-sm',
+          'max-w-[75%] min-w-0 rounded-2xl px-4 py-2.5 shadow-sm',
           isMe
             ? 'bg-primary-light text-white dark:bg-primary-dark'
             : 'bg-white text-slate-800 dark:bg-slate-800 dark:text-slate-100',
         )}
       >
         {!isMe && <div className="mb-1 text-xs font-bold text-slate-500 dark:text-slate-400">{senderName}</div>}
-        <p className="text-sm whitespace-pre-wrap">{message.body}</p>
+        <p className="text-sm whitespace-pre-wrap break-all">{message.body}</p>
         <div className={cn('mt-1 text-[10px]', isMe ? 'text-white/70 dark:text-white/60' : 'text-slate-400')}>
           {formatDateTime(new Date(message.created_at || message.createdAt))}
         </div>
@@ -210,11 +210,11 @@ function ChatRoom({ conversation, onBack }) {
         <div className="border-t border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
           {replyTo && (
             <div className="mb-3 flex items-start justify-between rounded-lg bg-slate-100 p-3 text-sm dark:bg-slate-800">
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <span className="font-semibold text-primary-light">
                   Replying to {replyTo.sender_name || replyTo.senderName || 'Unknown'}
                 </span>
-                <p className="mt-1 line-clamp-2 text-slate-500 dark:text-slate-400">{replyTo.body}</p>
+                <p className="mt-1 line-clamp-2 text-slate-500 dark:text-slate-400 break-all">{replyTo.body}</p>
               </div>
               <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => setReplyTo(null)}>
                 <X className="h-4 w-4" />

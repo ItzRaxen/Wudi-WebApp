@@ -36,14 +36,39 @@ select {
   --fc-border-color: #EAE0D5;
   --fc-page-bg-color: transparent;
   --fc-small-font-size: 0.78rem;
-  --fc-today-bg-color: rgba(33, 24, 43, 0.05);
+  --fc-today-bg-color: rgba(33, 24, 43, 0.5); /* Purple with 50% opacity */
   color: #1B1123;
 }
 
 .dark .fc {
   --fc-border-color: #2A1F31;
-  --fc-today-bg-color: rgba(33, 24, 43, 0.2);
+  --fc-today-bg-color: rgba(234, 224, 213, 0.5); /* Cream with 50% opacity */
   color: #EAE0D5;
+}
+
+/* Custom Today Date Number Indicator */
+.fc .fc-day-today .fc-daygrid-day-number,
+.fc .fc-day-today .fc-col-header-cell-cushion {
+  background-color: #21182B; /* Purple */
+  color: #F5EEE6 !important; /* Cream */
+  border-radius: 9999px;
+  min-width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  margin: 4px;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(33, 24, 43, 0.2);
+}
+
+/* Dark mode for Today Date Number */
+.dark .fc .fc-day-today .fc-daygrid-day-number,
+.dark .fc .fc-day-today .fc-col-header-cell-cushion {
+  background-color: #F5EEE6; /* Cream */
+  color: #21182B !important; /* Purple */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .fc .fc-toolbar-title {
@@ -57,6 +82,98 @@ select {
   background: #21182B;
   box-shadow: none;
   text-transform: capitalize;
+}
+
+/* Unified Button Group Container (Month, Week, Day AND <, >) */
+.fc .fc-button-group {
+  background: #FCFAF7;
+  border: 1px solid #21182B;
+  border-radius: 9999px;
+  padding: 4px;
+  display: inline-flex;
+  gap: 4px;
+  box-shadow: none;
+}
+
+.fc .fc-button-group .fc-button {
+  background: transparent !important;
+  color: #21182B !important;
+  border-radius: 9999px !important;
+  border: 0 !important;
+  padding: 6px 18px !important;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  box-shadow: none !important;
+  height: auto;
+}
+
+/* Active or Hover button style */
+.fc .fc-button-group .fc-button.fc-button-active,
+.fc .fc-button-group .fc-button:not(:disabled).fc-button-active {
+  background: #21182B !important;
+  color: #FCFAF7 !important;
+  font-weight: 600;
+}
+
+.fc .fc-button-group .fc-button:not(.fc-button-active):hover {
+  background: rgba(33, 24, 43, 0.08) !important;
+  color: #21182B !important;
+}
+
+/* Dark mode compatibility for button groups */
+.dark .fc .fc-button-group {
+  background: #1A1121;
+  border-color: #EAE0D5;
+}
+
+.dark .fc .fc-button-group .fc-button {
+  color: #EAE0D5 !important;
+}
+
+.dark .fc .fc-button-group .fc-button.fc-button-active,
+.dark .fc .fc-button-group .fc-button:not(:disabled).fc-button-active {
+  background: #EAE0D5 !important;
+  color: #1A1121 !important;
+}
+
+.dark .fc .fc-button-group .fc-button:not(.fc-button-active):hover {
+  background: rgba(234, 224, 213, 0.12) !important;
+  color: #EAE0D5 !important;
+}
+
+/* Custom Today Button (matches the container style of button groups) */
+.fc .fc-today-button {
+  background: #FCFAF7 !important;
+  color: #21182B !important;
+  border: 1px solid #21182B !important;
+  border-radius: 9999px !important;
+  padding: 10px 22px !important; /* height matching: 4px padding + 6px button padding */
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  text-transform: capitalize;
+}
+
+.fc .fc-today-button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed;
+}
+
+.fc .fc-today-button:not(:disabled):hover {
+  background: rgba(33, 24, 43, 0.08) !important;
+}
+
+/* Dark mode for Today Button */
+.dark .fc .fc-today-button {
+  background: #1A1121 !important;
+  color: #EAE0D5 !important;
+  border-color: #EAE0D5 !important;
+}
+
+.dark .fc .fc-today-button:not(:disabled):hover {
+  background: rgba(234, 224, 213, 0.12) !important;
 }
 
 @media (max-width: 640px) {
@@ -82,5 +199,4 @@ select {
   border-radius: 6px;
   padding: 2px 4px;
   cursor: pointer;
-  background-color: #35283C;
 }

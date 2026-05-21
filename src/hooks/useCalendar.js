@@ -8,6 +8,5 @@ export function useCalendarEvents() {
   return useQuery({
     queryKey: ['calendar-events', groups.length],
     queryFn: () => calendarService.getCalendarEvents(groups),
-    refetchInterval: REFETCH_INTERVAL_MS,
   });
 }

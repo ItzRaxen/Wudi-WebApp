@@ -18,9 +18,10 @@ export function SearchPage() {
   const search = useFilterStore((state) => state.search);
   const setSearch = useFilterStore((state) => state.setSearch);
   const debouncedSearch = useDebouncedValue(search, 250);
-  const { data: tasks = [], isLoading } = useAllTasks();
+  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useAllTasks();
   const { data: groups = [] } = useGroups();
   const { toggleTask, isPending } = useTaskMutations();
+  const tasks = data?.pages.flatMap((page) => page.todos) || [];
   const results = useMemo(
     () => filterTasks(tasks, { search: debouncedSearch }, groups),
     [debouncedSearch, groups, tasks],
@@ -49,6 +50,13 @@ export function SearchPage() {
           loading: isPending,
         }}
       />
+      {hasNextPage && (
+        <div className="mt-6 flex justify-center">
+          <Button variant="secondary" loading={isFetchingNextPage} onClick={() => fetchNextPage()}>
+            Load More Tasks
+          </Button>
+        </div>
+      )}
       <TaskMutationModals state={modals} />
     </>
   );

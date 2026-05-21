@@ -15,8 +15,9 @@ export function PersonalTasksPage() {
   const modals = useTaskModals('personal');
   const filters = useFilterStore((state) => state.personal);
   const setFilter = useFilterStore((state) => state.setPersonalFilter);
-  const { data: tasks = [], isLoading } = usePersonalTasks();
+  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = usePersonalTasks();
   const { toggleTask, isPending } = useTaskMutations();
+  const tasks = data?.pages.flatMap((page) => page.todos) || [];
   const filteredTasks = filterTasks(tasks, filters);
 
   return (
@@ -43,6 +44,13 @@ export function PersonalTasksPage() {
           loading: isPending,
         }}
       />
+      {hasNextPage && (
+        <div className="mt-6 flex justify-center">
+          <Button variant="secondary" loading={isFetchingNextPage} onClick={() => fetchNextPage()}>
+            Load More Tasks
+          </Button>
+        </div>
+      )}
       <TaskMutationModals state={modals} mode="personal" />
     </>
   );

@@ -67,12 +67,16 @@ export function TaskCard({ task, onOpen, onEdit, onDelete, onToggle, loading }) 
               <Check className="h-6 w-6" strokeWidth={2.5} />
             ) : null}
           </button>
-          <Button variant="secondary" size="icon" onClick={(e) => { e.stopPropagation(); onEdit?.(task); }} aria-label="Edit task">
-            <Pencil className="h-4 w-4" />
-          </Button>
-          <Button variant="secondary" size="icon" onClick={(e) => { e.stopPropagation(); onDelete?.(task); }} aria-label="Delete task">
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          {task.canEdit && (
+            <Button variant="secondary" size="icon" onClick={(e) => { e.stopPropagation(); onEdit?.(task); }} aria-label="Edit task">
+              <Pencil className="h-4 w-4" />
+            </Button>
+          )}
+          {task.canDelete && (
+            <Button variant="secondary" size="icon" onClick={(e) => { e.stopPropagation(); onDelete?.(task); }} aria-label="Delete task">
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </div>
     </article>

@@ -69,24 +69,16 @@ function createPollingSubscription(fetcher, callback, onError) {
 }
 
 export const taskService = {
+  async getTasksPage(page = 1, groups = []) {
+    const { todos, pagination } = await fetchTodosPage(page);
+    return {
+      todos: todos.map((todo) => normalizeTask(todo, groups)),
+      pagination,
+    };
+  },
+
   async getAllTasks(groups = []) {
     return fetchAllTodos(groups);
-  },
-
-  subscribePersonalTasks(user, callback, onError, groups = []) {
-    return createPollingSubscription(
-      async () => (await fetchAllTodos(groups)).filter((task) => task.type === 'personal'),
-      callback,
-      onError,
-    );
-  },
-
-  subscribeGroupTasks(user, callback, onError, groups = []) {
-    return createPollingSubscription(
-      async () => (await fetchAllTodos(groups)).filter((task) => task.type === 'group'),
-      callback,
-      onError,
-    );
   },
 
   async createTask(task) {

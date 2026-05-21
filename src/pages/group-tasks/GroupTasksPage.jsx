@@ -20,8 +20,9 @@ export function GroupTasksPage() {
   const filters = useFilterStore((state) => state.group);
   const setFilter = useFilterStore((state) => state.setGroupFilter);
   const { data: groups = [] } = useGroups();
-  const { data: tasks = [], isLoading } = useGroupTasks(selectedGroupId);
+  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useGroupTasks(selectedGroupId);
   const { toggleTask, isPending } = useTaskMutations();
+  const tasks = data?.pages.flatMap((page) => page.todos) || [];
   const filteredTasks = filterTasks(tasks, filters, groups);
 
   return (
@@ -58,6 +59,13 @@ export function GroupTasksPage() {
           loading: isPending,
         }}
       />
+      {hasNextPage && (
+        <div className="mt-6 flex justify-center">
+          <Button variant="secondary" loading={isFetchingNextPage} onClick={() => fetchNextPage()}>
+            Load More Tasks
+          </Button>
+        </div>
+      )}
       <TaskMutationModals state={modals} mode="group" selectedGroupId={selectedGroupId === 'all' ? '' : selectedGroupId} />
     </>
   );

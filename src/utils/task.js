@@ -50,6 +50,25 @@ export function normalizeTask(todo, groups = []) {
   const group = groups.find((item) => String(item.id) === String(teamId));
   const owner = normalizeUser(todo.user);
 
+  let canEdit = true;
+  let canDelete = true;
+
+  if (teamId && currentUser) {
+    const isCreator = owner && (
+      (owner.id && String(owner.id) === String(currentUser.id)) || 
+      (owner.email && owner.email === currentUser.email)
+    );
+    const isGroupOwner = group && (
+      group.isOwner || 
+      (group.owner && (
+        (group.owner.id && String(group.owner.id) === String(currentUser.id)) || 
+        (group.owner.email && group.owner.email === currentUser.email)
+      ))
+    );
+    canEdit = Boolean(isCreator || isGroupOwner);
+    canDelete = Boolean(isCreator || isGroupOwner);
+  }
+
   return {
     id: todo.id ?? todo.apiId,
     apiId: todo.id ?? todo.apiId,
@@ -71,6 +90,8 @@ export function normalizeTask(todo, groups = []) {
     })),
     completedBy,
     owner,
+    canEdit,
+    canDelete,
     raw: todo,
   };
 }

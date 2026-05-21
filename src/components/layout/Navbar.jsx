@@ -96,10 +96,6 @@ export function Navbar() {
             <Button variant="secondary" size="icon" onClick={toggleDarkMode} aria-label="Toggle dark mode">
               {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Button>
-            <Button variant="secondary" loading={isLoggingOut} onClick={logout}>
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">Logout</span>
-            </Button>
           </div>
         </div>
       </header>

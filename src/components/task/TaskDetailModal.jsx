@@ -43,14 +43,18 @@ export function TaskDetailModal({ task, open, onClose, onEdit, onDelete, onToggl
             <CheckCircle2 className="h-4 w-4" />
             {task.isCompleted ? 'Mark pending' : 'Complete'}
           </Button>
-          <Button variant="secondary" onClick={() => onEdit(task)}>
-            <Pencil className="h-4 w-4" />
-            Edit
-          </Button>
-          <Button variant="danger" onClick={() => onDelete(task)}>
-            <Trash2 className="h-4 w-4" />
-            Delete
-          </Button>
+          {task.canEdit && (
+            <Button variant="secondary" onClick={() => onEdit(task)}>
+              <Pencil className="h-4 w-4" />
+              Edit
+            </Button>
+          )}
+          {task.canDelete && (
+            <Button variant="danger" onClick={() => onDelete(task)}>
+              <Trash2 className="h-4 w-4" />
+              Delete
+            </Button>
+          )}
         </div>
       </div>
     </Modal>

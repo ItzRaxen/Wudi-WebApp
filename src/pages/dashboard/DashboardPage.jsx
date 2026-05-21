@@ -16,9 +16,12 @@ import { filterTasks } from '../../utils/task.js';
 export function DashboardPage() {
   const { user } = useAuth();
   const modals = useTaskModals();
-  const { data: tasks = [], isLoading } = useAllTasks();
+  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = useAllTasks();
   const { data: groups = [] } = useGroups();
   const { toggleTask, isPending } = useTaskMutations();
+
+  const tasks = data?.pages.flatMap((page) => page.todos) || [];
+  const totalTasksCount = data?.pages[0]?.pagination?.total || tasks.length;
 
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedSearch = useDebouncedValue(searchQuery, 250);
@@ -51,7 +54,7 @@ export function DashboardPage() {
       />
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <StatCard label="Total tasks" value={tasks.length} icon={ListTodo} tone="blue" />
+        <StatCard label="Total tasks" value={totalTasksCount} icon={ListTodo} tone="blue" />
         <StatCard label="Tasks today" value={todayTasks.length} icon={CalendarCheck2} tone="violet" />
         <StatCard label="Overdue" value={overdueTasks.length} icon={AlertCircle} tone="red" />
         <StatCard label="Completed" value={completedTasks.length} icon={CheckCircle2} tone="green" />
@@ -104,6 +107,13 @@ export function DashboardPage() {
           loading={isLoading}
           actions={taskActions}
         />
+        {hasNextPage && (
+          <div className="mt-6 flex justify-center">
+            <Button variant="secondary" loading={isFetchingNextPage} onClick={() => fetchNextPage()}>
+              Load More Data
+            </Button>
+          </div>
+        )}
       </section>
 
       <TaskMutationModals state={modals} />

@@ -27,7 +27,7 @@ export function formatDateInput(value) {
 
 export function toApiDeadline(value) {
   const date = parseDate(value);
-  return date ? format(date, 'yyyy-MM-dd HH:mm:ss') : null;
+  return date ? date.toISOString().slice(0, 19).replace('T', ' ') : null;
 }
 
 export function isTodayDate(value) {
