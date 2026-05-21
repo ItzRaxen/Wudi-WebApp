@@ -25,12 +25,14 @@ export function ProtectedLayout() {
     return <Navigate to={ROUTES.login} replace state={{ from: location }} />;
   }
 
+  const isChat = location.pathname.startsWith(ROUTES.chat);
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className={isChat ? "h-screen overflow-hidden bg-slate-50 dark:bg-slate-950" : "min-h-screen bg-slate-50 dark:bg-slate-950"}>
       <Sidebar />
-      <div className="lg:pl-72">
+      <div className={`flex flex-col lg:pl-72 ${isChat ? "h-screen" : "min-h-screen"}`}>
         <Navbar />
-        <main className="mx-auto w-full max-w-7xl px-4 py-6 md:px-6">
+        <main className={isChat ? "flex-1 overflow-hidden w-full" : "mx-auto w-full max-w-7xl px-4 py-6 md:px-6"}>
           <Outlet />
         </main>
       </div>

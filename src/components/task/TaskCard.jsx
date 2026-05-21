@@ -1,10 +1,24 @@
+import { useState } from 'react';
 import { CalendarClock, Check, Pencil, Trash2, UserRound, UsersRound, Loader2 } from 'lucide-react';
 import { formatDateTime, isOverdue } from '../../utils/date.js';
 import { Button } from '../ui/Button.jsx';
 import { PriorityBadge, StatusBadge, TypeBadge } from '../ui/Badge.jsx';
 
-export function TaskCard({ task, onOpen, onEdit, onDelete, onToggle, loading }) {
+export function TaskCard({ task, onOpen, onEdit, onDelete, onToggle }) {
+  const [isToggling, setIsToggling] = useState(false);
   const overdue = isOverdue(task.deadline, task.isCompleted);
+
+  const handleToggle = async (e) => {
+    e.stopPropagation();
+    if (!onToggle || isToggling) return;
+    
+    setIsToggling(true);
+    try {
+      await onToggle(task);
+    } finally {
+      setIsToggling(false);
+    }
+  };
 
   return (
     <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft dark:border-slate-800 dark:bg-slate-900">
@@ -49,11 +63,8 @@ export function TaskCard({ task, onOpen, onEdit, onDelete, onToggle, loading }) 
 
         <div className="flex shrink-0 items-center gap-2">
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggle?.(task);
-            }}
-            disabled={loading}
+            onClick={handleToggle}
+            disabled={isToggling}
             className={`flex h-10 w-10 items-center justify-center rounded-lg border-2 transition-colors ${
               task.isCompleted
                 ? 'border-primary bg-primary text-white dark:border-primary-light dark:bg-primary-light'
@@ -61,7 +72,7 @@ export function TaskCard({ task, onOpen, onEdit, onDelete, onToggle, loading }) 
             }`}
             aria-label={task.isCompleted ? 'Mark pending' : 'Mark complete'}
           >
-            {loading ? (
+            {isToggling ? (
               <Loader2 className="h-5 w-5 animate-spin" />
             ) : task.isCompleted ? (
               <Check className="h-6 w-6" strokeWidth={2.5} />

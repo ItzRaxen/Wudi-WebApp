@@ -178,7 +178,7 @@ function ChatRoom({ conversation, onBack }) {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto scrollbar-hide p-4 space-y-4">
           {isLoading && messages.length === 0 ? (
             <div className="flex h-full items-center justify-center">
               <span className="text-sm text-slate-500">Loading messages...</span>
@@ -330,7 +330,7 @@ export function ChatPage() {
   });
 
   return (
-    <div className="flex h-[calc(100vh-theme(spacing.16))] w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950 md:h-[calc(100vh-theme(spacing.8))] md:m-4 md:w-[calc(100%-theme(spacing.8))]">
+    <div className="flex h-full w-full overflow-hidden bg-white dark:bg-slate-950">
       {/* Sidebar List */}
       <div
         className={cn(
@@ -359,7 +359,7 @@ export function ChatPage() {
             )}
           </div>
         </div>
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto scrollbar-hide">
           {isLoading ? (
             <div className="p-4 text-center text-sm text-slate-500">Loading chats...</div>
           ) : filteredConversations.length === 0 ? (
